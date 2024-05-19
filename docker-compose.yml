@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: movie_catalog
+    ports:
+      - "5433:5432"
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6380:6379"
+
+  app:
+    build: .
+    restart: always
+    ports:
+      - "3001:3000"  # Modifique a porta aqui
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=movie_catalog
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=your_secret_key
